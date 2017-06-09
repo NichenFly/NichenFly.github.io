@@ -151,6 +151,59 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/09/hello-world/">Hello World</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/09/hello-world/" class="archive-article-date">
+  	<time datetime="2017-06-09T01:56:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2017/06/09/hello-world/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/09/hello-world/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+  
     <article id="post-MySQL慢查日志记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -189,203 +242,9 @@ log-queries-not-using-indexes                      #记录未使用索引的查�
 <h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><pre>
 yum install perl-DBI perl-DBD-MySQL -y
 </pre>
-
-<h3 id="下载pt-query-digest"><a href="#下载pt-query-digest" class="headerlink" title="下载pt-query-digest"></a>下载<code>pt-query-digest</code></h3><pre>
-wget https://www.percona.com/get/pt-query-digest
-</pre>
-
-<h3 id="添加当前用户的可执行权限"><a href="#添加当前用户的可执行权限" class="headerlink" title="添加当前用户的可执行权限"></a>添加当前用户的可执行权限</h3><pre>
-chmod u+x pt-query-digest
-</pre>
-
-<h3 id="移动到-usr-bin-目录下-使全局可用"><a href="#移动到-usr-bin-目录下-使全局可用" class="headerlink" title="移动到/usr/bin/目录下,使全局可用"></a>移动到<code>/usr/bin/</code>目录下,使全局可用</h3><pre>
-mv pt-query-digest /usr/bin/
-</pre>
-
-<h3 id="测试运行"><a href="#测试运行" class="headerlink" title="测试运行"></a>测试运行</h3><pre>
-pt-query-digest --help
-</pre>
-
-<p>如果出现大量的帮助信息,则表示可用(依赖perl环境,如果出现perl的关于语言的警告,尝试使用在<code>/etc/profile</code>文件中添加<code>export LC_ALL=&quot;C&quot;</code>并<code>source /etc/profile</code>)</p>
-<h2 id="3-安装Query-Digest-UI"><a href="#3-安装Query-Digest-UI" class="headerlink" title="3. 安装Query-Digest-UI"></a>3. 安装Query-Digest-UI</h2><p>Query-Digest-UI是一款php写的将pt-query-digest等对相关文件分析结果进行展示的web界面程序 </p>
-<h3 id="安装依赖-1"><a href="#安装依赖-1" class="headerlink" title="安装依赖"></a>安装依赖</h3><pre>
-yum install php php-common php-mysqlnd php-mysql php-pdo perl-DBI perl-DBD-MySQL httpd -y
-</pre>
-
-<h3 id="创建记录表"><a href="#创建记录表" class="headerlink" title="创建记录表"></a>创建记录表</h3><p>运行<code>mysql -uroot -p</code>登录mysql,运行</p>
-<pre>
--- install.sql
--- Create the database needed for the Query-Digest-UI
-DROP DATABASE IF EXISTS slow_query_log;
-CREATE DATABASE slow_query_log;
-USE slow_query_log;  
--- Create the global query review table
-CREATE TABLE `global_query_review` (
-  `checksum` bigint(20) unsigned NOT NULL,
-  `fingerprint` text NOT NULL,
-  `sample` longtext NOT NULL,
-  `first_seen` datetime DEFAULT NULL,
-  `last_seen` datetime DEFAULT NULL,
-  `reviewed_by` varchar(20) DEFAULT NULL,
-  `reviewed_on` datetime DEFAULT NULL,
-  `comments` text,
-  `reviewed_status` varchar(24) DEFAULT NULL,
-  PRIMARY KEY (`checksum`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
--- Create the historical query review table
-CREATE TABLE `global_query_review_history` (
-  `hostname_max` varchar(64) NOT NULL,
-  `db_max` varchar(64) DEFAULT NULL,
-  `checksum` bigint(20) unsigned NOT NULL,
-  `sample` longtext NOT NULL,
-  `ts_min` datetime NOT NULL ,
-  `ts_max` datetime NOT NULL ,
-  `ts_cnt` float DEFAULT NULL,
-  `Query_time_sum` float DEFAULT NULL,
-  `Query_time_min` float DEFAULT NULL,
-  `Query_time_max` float DEFAULT NULL,
-  `Query_time_pct_95` float DEFAULT NULL,
-  `Query_time_stddev` float DEFAULT NULL,
-  `Query_time_median` float DEFAULT NULL,
-  `Lock_time_sum` float DEFAULT NULL,
-  `Lock_time_min` float DEFAULT NULL,
-  `Lock_time_max` float DEFAULT NULL,
-  `Lock_time_pct_95` float DEFAULT NULL,
-  `Lock_time_stddev` float DEFAULT NULL,
-  `Lock_time_median` float DEFAULT NULL,
-  `Rows_sent_sum` float DEFAULT NULL,
-  `Rows_sent_min` float DEFAULT NULL,
-  `Rows_sent_max` float DEFAULT NULL,
-  `Rows_sent_pct_95` float DEFAULT NULL,
-  `Rows_sent_stddev` float DEFAULT NULL,
-  `Rows_sent_median` float DEFAULT NULL,
-  `Rows_examined_sum` float DEFAULT NULL,
-  `Rows_examined_min` float DEFAULT NULL,
-  `Rows_examined_max` float DEFAULT NULL,
-  `Rows_examined_pct_95` float DEFAULT NULL,
-  `Rows_examined_stddev` float DEFAULT NULL,
-  `Rows_examined_median` float DEFAULT NULL,
-  `Rows_affected_sum` float DEFAULT NULL,
-  `Rows_affected_min` float DEFAULT NULL,
-  `Rows_affected_max` float DEFAULT NULL,
-  `Rows_affected_pct_95` float DEFAULT NULL,
-  `Rows_affected_stddev` float DEFAULT NULL,
-  `Rows_affected_median` float DEFAULT NULL,
-  `Rows_read_sum` float DEFAULT NULL,
-  `Rows_read_min` float DEFAULT NULL,
-  `Rows_read_max` float DEFAULT NULL,
-  `Rows_read_pct_95` float DEFAULT NULL,
-  `Rows_read_stddev` float DEFAULT NULL,
-  `Rows_read_median` float DEFAULT NULL,
-  `Merge_passes_sum` float DEFAULT NULL,
-  `Merge_passes_min` float DEFAULT NULL,
-  `Merge_passes_max` float DEFAULT NULL,
-  `Merge_passes_pct_95` float DEFAULT NULL,
-  `Merge_passes_stddev` float DEFAULT NULL,
-  `Merge_passes_median` float DEFAULT NULL,
-  `InnoDB_IO_r_ops_min` float DEFAULT NULL,
-  `InnoDB_IO_r_ops_max` float DEFAULT NULL,
-  `InnoDB_IO_r_ops_pct_95` float DEFAULT NULL,
-  `InnoDB_IO_r_bytes_pct_95` float DEFAULT NULL,
-  `InnoDB_IO_r_bytes_stddev` float DEFAULT NULL,
-  `InnoDB_IO_r_bytes_median` float DEFAULT NULL,
-  `InnoDB_IO_r_wait_min` float DEFAULT NULL,
-  `InnoDB_IO_r_wait_max` float DEFAULT NULL,
-  `InnoDB_IO_r_wait_pct_95` float DEFAULT NULL,
-  `InnoDB_IO_r_ops_stddev` float DEFAULT NULL,
-  `InnoDB_IO_r_ops_median` float DEFAULT NULL,
-  `InnoDB_IO_r_bytes_min` float DEFAULT NULL,
-  `InnoDB_IO_r_bytes_max` float DEFAULT NULL,
-  `InnoDB_IO_r_wait_stddev` float DEFAULT NULL,
-  `InnoDB_IO_r_wait_median` float DEFAULT NULL,
-  `InnoDB_rec_lock_wait_min` float DEFAULT NULL,
-  `InnoDB_rec_lock_wait_max` float DEFAULT NULL,
-  `InnoDB_rec_lock_wait_pct_95` float DEFAULT NULL,
-  `InnoDB_rec_lock_wait_stddev` float DEFAULT NULL,
-  `InnoDB_rec_lock_wait_median` float DEFAULT NULL,
-  `InnoDB_queue_wait_min` float DEFAULT NULL,
-  `InnoDB_queue_wait_max` float DEFAULT NULL,
-  `InnoDB_queue_wait_pct_95` float DEFAULT NULL,
-  `InnoDB_queue_wait_stddev` float DEFAULT NULL,
-  `InnoDB_queue_wait_median` float DEFAULT NULL,
-  `InnoDB_pages_distinct_min` float DEFAULT NULL,
-  `InnoDB_pages_distinct_max` float DEFAULT NULL,
-  `InnoDB_pages_distinct_pct_95` float DEFAULT NULL,
-  `InnoDB_pages_distinct_stddev` float DEFAULT NULL,
-  `InnoDB_pages_distinct_median` float DEFAULT NULL,
-  `QC_Hit_cnt` float DEFAULT NULL,
-  `QC_Hit_sum` float DEFAULT NULL,
-  `Full_scan_cnt` float DEFAULT NULL,
-  `Full_scan_sum` float DEFAULT NULL,
-  `Full_join_cnt` float DEFAULT NULL,
-  `Full_join_sum` float DEFAULT NULL,
-  `Tmp_table_cnt` float DEFAULT NULL,
-  `Tmp_table_sum` float DEFAULT NULL,
-  `Filesort_cnt` float DEFAULT NULL,
-  `Filesort_sum` float DEFAULT NULL,
-  `Tmp_table_on_disk_cnt` float DEFAULT NULL,
-  `Tmp_table_on_disk_sum` float DEFAULT NULL,
-  `Filesort_on_disk_cnt` float DEFAULT NULL,
-  `Filesort_on_disk_sum` float DEFAULT NULL,
-  `Bytes_sum` float DEFAULT NULL,
-  `Bytes_min` float DEFAULT NULL,
-  `Bytes_max` float DEFAULT NULL,
-  `Bytes_pct_95` float DEFAULT NULL,
-  `Bytes_stddev` float DEFAULT NULL,
-  `Bytes_median` float DEFAULT NULL,
-  UNIQUE KEY `hostname_max` (`hostname_max`,`checksum`,`ts_min`,`ts_max`),
-  KEY `ts_min` (`ts_min`),
-  KEY `checksum` (`checksum`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-</pre>
-创建用户`slowlog`,并给用户授权
-<pre>
-grant ALL ON slow_query_log.* to 'slowlog'@'%' IDENTIFIED BY 'Password1234!';
-</pre>
-退出MySQL,运行
-<pre>
-pt-query-digest --user=<font color="#f00"><获取慢查数据的用户></获取慢查数据的用户></font> --password=<font color="#f00"><用户密码></用户密码></font> --review h=<font color="#f00">MySQL服务器</font>,D=slow\_query\_log,t=global\_query\_review --history h=<font color="#f00">MySQL服务器</font>,D=slow\_query\_log,t=global\_query\_review\_history --no-report --limit=0% --filter="\\$event->{Bytes} = length( \\$event->{arg}) and \\$event->{hostname}=\\"<font color="#f00"><当前主机名></当前主机名></font>\\"" <font color="#f00"><慢查日志文件></慢查日志文件></font>
-</pre>
-标红的表示需要根据需要替换的内容,如下示例
-<pre>
-pt-query-digest --user=slowlog --password=Pwd1234@ --review h=10.18.13.7,D=slow\_query\_log,t=global\_query\_review --history h=10.18.13.7,D=slow\_query\_log,t=global\_query\_review\_history --no-report --limit=0% --filter=" \\$event->{Bytes} = length(\\$event->{arg}) and \\$event->{hostname}=\\"5703f371f856\\"" /mysqldata/mysql_slow.log
-</pre>
-
-<h3 id="下载Query-Digest-UI代码"><a href="#下载Query-Digest-UI代码" class="headerlink" title="下载Query-Digest-UI代码"></a>下载Query-Digest-UI代码</h3><pre>
-wget https://codeload.github.com/kormoc/Query-Digest-UI/zip/master
-</pre>
-解压并移动到`/var/www/html/`目录下
-<pre>
-unzip master && mv Query-Digest-UI-master slow && mv slow /var/www/html/
-</pre>
-
-<p>编辑Query-Digest-UI的配置文件</p>
-<pre>
-cd /var/www/html/slow/ && cp config.php.example config.php && vim config.php
-</pre>
-修改reviewhost项
-<pre>
-$reviewhost = array(
-    'dsn'           => 'mysql:host=<font color="#f00">MySQL主机</font>;port=3306;dbname=slow_query_log',
-    'user'          => 'slowlog',
-    'password'      => '<font color="#f00">password</font>',
-    'review_table'  => 'global_query_review',
-    'history_table' => 'global_query_review_history',
-);
-</pre>
-标红的需要根据实际修改,以下为示例
-<pre>
-$reviewhost = array(
-    'dsn'           => 'mysql:host=10.18.13.7;port=3306;dbname=slow_query_log',
-    'user'          => 'slowlog',
-    'password'      => 'Pwd1234@',
-    'review_table'  => 'global_query_review',
-    'history_table' => 'global_query_review_history',
-);
-</pre>
-
-<h3 id="启动httpd"><a href="#启动httpd" class="headerlink" title="启动httpd"></a>启动httpd</h3><p><pre>service httpd start<br></pre><br>访问浏览器查看</p>
-
+        
+          <a class="article-more-a" href="/2017/06/07/MySQL慢查日志记录/#more">more >></a>
+        
       
 
       
@@ -447,91 +306,9 @@ $reviewhost = array(
 <h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><pre>
 [root@web ~]# yum install screen rsync inotify-tool  
 </pre>
-
-<blockquote>
-<p>服务器端和客户端都要安装</p>
-</blockquote>
-<h2 id="配置rsync-Server端"><a href="#配置rsync-Server端" class="headerlink" title="配置rsync-Server端"></a>配置rsync-Server端</h2><p>rsync-server的配置文件为/etc/rsyncd.conf</p>
-<p><code>vim /etc/rsyncd.conf</code></p>
-<pre>
-log file =/var/log/rsyncd.log         #显式配置日志文件,不走rsyslog
-pid file =/usr/rsyncd/rsyncd.pid        #pid文件
-lock file =/usr/rsyncd/rsyncd.lock  #lock文件
-secrets file =/etc/rsync/rsyncd-server.pas  #密码文件,权限必须是600,username:password形式
-motd file =/etc/rsync/rsyncd.motd   #提示文件,默认无
-read only =no                      #
-hosts allow =10.8.0.174            #允许访问的机器
-list =yes                         #列表显示
-uid =root                                #
-gid =root                                #
-max connections =30                    #
-[data]                                    #模块名,在client端使用的是模块名
-path=/data                            #路径
-comment =Received...                #提示信息
-auth users =root                        #认证用户,必须存在
-</pre>
-
-<h3 id="rsyncd-server-pas"><a href="#rsyncd-server-pas" class="headerlink" title="rsyncd-server.pas"></a>rsyncd-server.pas</h3><p><code>vim /etc/rsync/rsyncd-server.pas</code></p>
-<pre>
-# vi rsyncd.pas //用户密码对文件，用“：”隔开
-user:password
-（保存退出）
-# chmod 600 rsyncd.pas  //权限必须为600，否则会出错
-# vi rsyncd.motd  //配置欢迎消息
-welcome to rsync 161
-# rsync --daemon --config=/usr/local/rsync/etc/rsyncd.conf
-</pre>
-
-<h2 id="启动server"><a href="#启动server" class="headerlink" title="启动server"></a>启动server</h2><pre>
-[root@web ~]# rsync --daemon --config=/etc/rsyncd.conf
-</pre>
-
-<blockquote>
-<p>以守护方式启动rsync server</p>
-</blockquote>
-<h2 id="配置rsync-client端"><a href="#配置rsync-client端" class="headerlink" title="配置rsync-client端"></a>配置rsync-client端</h2><p><code>vim /etc/rsync/rsyncd-client.pas</code></p>
-<pre>
-password
-</pre>
-
-<blockquote>
-<p>只写密码,600的权限</p>
-</blockquote>
-<h2 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h2><p><code>vim /usr/rsyncd/inotofy.sh</code></p>
-<pre>
-#!/bin/bash
-src=/data/                          # 需要同步的源路径
-des=data                             # 目标服务器上 rsync --daemon 发布的名称，rsync --daemon这里就不做介绍了，网上搜一下，比较简单。
-rsync_passwd_file=/etc/rsync/rsyncd-client.pas           # rsync验证的密码文件
-ip=10.8.0.174                # 目标服务器1
-user=root                            # rsync --daemon定义的验证用户名
-cd ${src}                              # 此方法中，由于rsync同步的特性，这里必须要先cd到源目录，inotify再监听 ./ 才能rsync同步后目录结构一致，有兴趣的同学可以进行各种尝试观看其效
-果
-inotifywait -mrq --format  '%Xe %w%f' -e modify,create ./ | while read file         # 把监控到有发生更改的"文件路径列表"循环
-do
-        INO_EVENT=$(echo $file | awk '{print $1}')      # 把inotify输出切割 把事件类型部分赋值给INO_EVENT
-        INO_FILE=$(echo $file | awk '{print $2}')       # 把inotify输出切割 把文件路径部分赋值给INO_FILE
-        echo "-------------------------------$(date)------------------------------------"
-        echo $file
-        #增加、修改、写入完成、移动进事件
-        #增、改放在同一个判断，因为他们都肯定是针对文件的操作，即使是新建目录，要同步的也只是一个空目录，不会影响速度。
-        if [[ $INO_EVENT =~ 'CREATE' ]] || [[ $INO_EVENT =~ 'MODIFY' ]]          # 判断事件类型
-        then
-                echo 'CREATE or MODIFY'
-                rsync -avzcR --password-file=${rsync_passwd_file} $(dirname ${INO_FILE}) ${user}@${ip}::${des}         # INO_FILE变量代表路径哦  -c校验文件内容
-        fi
-done
-</pre>
-
-<blockquote>
-<p>1、 rsync服务器端必须存在bak这个真实用户<br>2、 客户端和服务器的rsyncd.pas文件权限必须为600<br>3、 Secrets file 路径必须正确，否则日志中将会提示密码文件不存在<br>4、 Uid与Gid如果为nobody，则模块的所有者和所有组必须改为nobody<br>5、 rsyncd.pas内的密码和系统用户的密码不同，服务器为用户密码对，而客户端仅仅是密码<br>6、 服务器端rsyncd.pas内可以有多个用户密码对，客户端的rsyncd.pas只能有一个密码<br>7、 有问题查看/usr/local/rsync/var/rsyncd.log内的日志  </p>
-</blockquote>
-<p>给脚本赋予运行权限</p>
-<p><code>chmod +x /usr/rsyncd/inotify.sh</code></p>
-<h2 id="运行文件事件监听"><a href="#运行文件事件监听" class="headerlink" title="运行文件事件监听"></a>运行文件事件监听</h2><pre>
-[root@web ~]# screen -S inotify /usr/rsyncd/inotify.sh
-</pre>
-
+        
+          <a class="article-more-a" href="/2017/06/07/rsync-inotify实现两台机器间文件高效互备/#more">more >></a>
+        
       
 
       
@@ -544,62 +321,6 @@ done
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/06/07/rsync-inotify实现两台机器间文件高效互备/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/07/hello-world/">Hello World</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/07/hello-world/" class="archive-article-date">
-  	<time datetime="2017-06-07T05:32:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/07/hello-world/">展开全文 >></a>
         </p>
       
 

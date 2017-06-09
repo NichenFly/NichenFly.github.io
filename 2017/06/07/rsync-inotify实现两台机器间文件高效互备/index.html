@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/06/07/rsync-inotify实现两台机器间文件高效互备/index.html">
 <meta property="og:site_name" content="Fly">
 <meta property="og:description" content="查看操作系统内核支持ll /proc/sys/fs/inotify/  [root@web ~]# ll /proc/sys/fs/inotify/ 总用量0 -rw-r--r--1 root root 09月923:36 max_queued_events -rw-r--r--1 root root 09月923:36 max_user_instances -rw-r--r--1 root ro">
-<meta property="og:updated_time" content="2017-06-07T09:39:47.000Z">
+<meta property="og:updated_time" content="2017-06-09T01:56:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="rsync-inotify实现两台机器间文件高效互备">
 <meta name="twitter:description" content="查看操作系统内核支持ll /proc/sys/fs/inotify/  [root@web ~]# ll /proc/sys/fs/inotify/ 总用量0 -rw-r--r--1 root root 09月923:36 max_queued_events -rw-r--r--1 root root 09月923:36 max_user_instances -rw-r--r--1 root ro">
@@ -188,12 +188,15 @@
 <h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><pre>
 [root@web ~]# yum install screen rsync inotify-tool  
 </pre>
+<a id="more"></a>
+> 服务器端和客户端都要安装
 
-<blockquote>
-<p>服务器端和客户端都要安装</p>
-</blockquote>
-<h2 id="配置rsync-Server端"><a href="#配置rsync-Server端" class="headerlink" title="配置rsync-Server端"></a>配置rsync-Server端</h2><p>rsync-server的配置文件为/etc/rsyncd.conf</p>
-<p><code>vim /etc/rsyncd.conf</code></p>
+## 配置rsync-Server端
+
+rsync-server的配置文件为/etc/rsyncd.conf
+
+`vim /etc/rsyncd.conf`
+
 <pre>
 log file =/var/log/rsyncd.log         #显式配置日志文件,不走rsyslog
 pid file =/usr/rsyncd/rsyncd.pid        #pid文件
@@ -374,11 +377,6 @@ done
       </div>
     </a>
   
-  
-    <a href="/2017/06/07/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Hello World</div>
-      <i class="icon-circle-right"></i>
-    </a>
   
 </nav>
 

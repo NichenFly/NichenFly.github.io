@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/06/07/MySQL慢查日志记录/index.html">
 <meta property="og:site_name" content="Fly">
 <meta property="og:description" content="1. 开启MySQL的慢查日志功能编辑/etc/my.cnf文件 vim /etc/my.cnf   添加 slow_query_log         =1                         #开启慢查日志,1为开启,0为关闭,默认关闭 slow_query_log_file    =/mysqldata/mysql_slow.log #慢查日志存放位置 long_query_ti">
-<meta property="og:updated_time" content="2017-06-07T10:02:45.000Z">
+<meta property="og:updated_time" content="2017-06-09T01:55:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL慢查日志记录">
 <meta name="twitter:description" content="1. 开启MySQL的慢查日志功能编辑/etc/my.cnf文件 vim /etc/my.cnf   添加 slow_query_log         =1                         #开启慢查日志,1为开启,0为关闭,默认关闭 slow_query_log_file    =/mysqldata/mysql_slow.log #慢查日志存放位置 long_query_ti">
@@ -191,8 +191,9 @@ log-queries-not-using-indexes                      #记录未使用索引的查�
 <h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><pre>
 yum install perl-DBI perl-DBD-MySQL -y
 </pre>
-
-<h3 id="下载pt-query-digest"><a href="#下载pt-query-digest" class="headerlink" title="下载pt-query-digest"></a>下载<code>pt-query-digest</code></h3><pre>
+<a id="more"></a>
+### 下载`pt-query-digest`
+<pre>
 wget https://www.percona.com/get/pt-query-digest
 </pre>
 
@@ -479,6 +480,15 @@ $reviewhost = array(
 
   
 <nav id="article-nav">
+  
+    <a href="/2017/06/09/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
   
   
     <a href="/2017/06/07/rsync-inotify实现两台机器间文件高效互备/" id="article-nav-older" class="article-nav-link-wrap">
