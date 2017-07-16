@@ -8,16 +8,16 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Linux的user的uid对分布式文件系统的影响 | Fly</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="总结一下今天凌晨部署系统遇到的关于 Linux 用户的 uid 问题  系统概况先说一下系统的关于文件部分的概况   WEB服务器有两个(A, B),每个都有一个用户 user-x 并使用 user-x 用户运行程序 每个服务器的相同目录都挂载同一个龙存(一种文件系统,类似于NFS) 每个WEB服务器都可能会对龙存进行读写 每个 user-x 在各自的服务器上的 uid 可能是不一样的(原因可能">
+  <meta name="description" content="总结一下今天凌晨部署系统遇到的关于 Linux 用户的 uid 问题 系统概况先说一下系统的关于文件部分的概况   WEB服务器有两个(A, B),每个都有一个用户 user-x 并使用 user-x 用户运行程序 每个服务器的相同目录都挂载同一个龙存(一种文件系统,类似于NFS) 每个WEB服务器都可能会对龙存进行读写 每个 user-x 在各自的服务器上的 uid 可能是不一样的(原因可能有的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux的user的uid对分布式文件系统的影响">
 <meta property="og:url" content="http://yoursite.com/2017/07/16/linux的uid对分布式文件系统的影响/index.html">
 <meta property="og:site_name" content="Fly">
-<meta property="og:description" content="总结一下今天凌晨部署系统遇到的关于 Linux 用户的 uid 问题  系统概况先说一下系统的关于文件部分的概况   WEB服务器有两个(A, B),每个都有一个用户 user-x 并使用 user-x 用户运行程序 每个服务器的相同目录都挂载同一个龙存(一种文件系统,类似于NFS) 每个WEB服务器都可能会对龙存进行读写 每个 user-x 在各自的服务器上的 uid 可能是不一样的(原因可能">
-<meta property="og:updated_time" content="2017-07-16T14:49:13.000Z">
+<meta property="og:description" content="总结一下今天凌晨部署系统遇到的关于 Linux 用户的 uid 问题 系统概况先说一下系统的关于文件部分的概况   WEB服务器有两个(A, B),每个都有一个用户 user-x 并使用 user-x 用户运行程序 每个服务器的相同目录都挂载同一个龙存(一种文件系统,类似于NFS) 每个WEB服务器都可能会对龙存进行读写 每个 user-x 在各自的服务器上的 uid 可能是不一样的(原因可能有的">
+<meta property="og:updated_time" content="2017-07-16T14:53:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux的user的uid对分布式文件系统的影响">
-<meta name="twitter:description" content="总结一下今天凌晨部署系统遇到的关于 Linux 用户的 uid 问题  系统概况先说一下系统的关于文件部分的概况   WEB服务器有两个(A, B),每个都有一个用户 user-x 并使用 user-x 用户运行程序 每个服务器的相同目录都挂载同一个龙存(一种文件系统,类似于NFS) 每个WEB服务器都可能会对龙存进行读写 每个 user-x 在各自的服务器上的 uid 可能是不一样的(原因可能">
+<meta name="twitter:description" content="总结一下今天凌晨部署系统遇到的关于 Linux 用户的 uid 问题 系统概况先说一下系统的关于文件部分的概况   WEB服务器有两个(A, B),每个都有一个用户 user-x 并使用 user-x 用户运行程序 每个服务器的相同目录都挂载同一个龙存(一种文件系统,类似于NFS) 每个WEB服务器都可能会对龙存进行读写 每个 user-x 在各自的服务器上的 uid 可能是不一样的(原因可能有的">
   
     <link rel="alternative" href="/atom.xml" title="Fly" type="application/atom+xml">
   
@@ -173,9 +173,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>总结一下今天凌晨部署系统遇到的关于 Linux 用户的 uid 问题</p>
-</blockquote>
+        <p>总结一下今天凌晨部署系统遇到的关于 Linux 用户的 uid 问题</p>
 <h2 id="系统概况"><a href="#系统概况" class="headerlink" title="系统概况"></a>系统概况</h2><p>先说一下系统的关于文件部分的概况</p>
 <blockquote>
 <ol>
