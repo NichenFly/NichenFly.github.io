@@ -172,34 +172,34 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>总结一下今天凌晨部署系统遇到的关于Linux用户的uid问题</p>
+<p>总结一下今天凌晨部署系统遇到的关于 Linux 用户的 uid 问题</p>
 </blockquote>
 <h2 id="系统概况"><a href="#系统概况" class="headerlink" title="系统概况"></a>系统概况</h2><p>先说一下系统的关于文件部分的概况</p>
 <blockquote>
 <ol>
-<li>WEB服务器有两个(A,B),每个都有一个用户user-x并使用user-x用户运行程序</li>
-<li>每个服务器的相同目录都挂载同一个龙存(一种文件系统,类似于NFS)</li>
+<li>WEB服务器有两个(A, B),每个都有一个用户 user-x 并使用 user-x 用户运行程序</li>
+<li>每个服务器的相同目录都挂载同一个龙存(一种文件系统,类似于<a href="http://baike.baidu.com/item/NFS/812203" target="_blank" rel="external">NFS</a>)</li>
 <li>每个WEB服务器都可能会对龙存进行读写</li>
 <li>每个user-x在各自的服务器上的uid可能是不一样的(原因可能有的服务器是后来加的,或者安装操作系统时不是一个人或者账户新建顺序不一样等) </li>
 </ol>
 </blockquote>
-<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在A服务器上显示的龙存目录文件权限是user-x,在B服务器上的龙存目录文件权限则很是诡异的显示user-y(用来监控服务器状态的建立的).由于B服务器上是使用user-x运行的程序,所以,正常对于龙存目录则无法写入(权限拒绝,不是你的东西你不要动)</p>
+<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在 A 服务器上显示的龙存目录文件权限是 user-x ,在B服务器上的龙存目录文件权限则很是诡异的显示 user-y (用来监控服务器状态的建立的).由于 B 服务器上是使用 user-x 运行的程序,所以,正常对于龙存目录则无法写入(权限拒绝,不是你的东西你不要动)</p>
 <h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>经过冥思苦想,甚至打电话给我们运维的小伙,想问问他你的监控程序干嘛了,竟然把我在龙存上的文件属性给改了,我们那小伙一听,一脸懵逼啊,这不可能啊,我的程序没那功能啊,不会是被攻击了吧<del>~</del>(当然不是),然后就跟他描述现状,让他停了监控程序后,依然不行<del>~</del>~~ </p>
-<p>忽然,天空一道闪电(外面下着雨),我想起了Linux的用户id的问题,文件在linux系统中的所有者和所属组是按user id和group id记录的,在显示的时候根据id再对应到相应的所有者和所属组</p>
-<p>既然想到了这种可能性,立马查看这两台服务器的<code>/etc/passwd</code>文件,果然, A 机器的 user-x 的 uid 和 B 机器的 user-y 的 uid 是一样的</p>
-<h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><p>既然找到了问题原因,解决就好办了,把B机器的user-x的uid改成和A机器的user-x的uid一样就好了(或者把A的user-x的uid改成和B的user-x的uid一致)</p>
+<p>忽然,天空一道闪电(外面下着雨),我想起了 Linux 的用户 uid 的问题,文件在 Linux 系统中的所有者和所属组是按 user id(uid) 和 group id(gid) 记录的,在显示的时候根据id再对应到相应的所有者和所属组</p>
+<p>既然想到了这种可能性,立马查看这两台服务器的<code>/etc/passwd</code>文件,果然, A 服务器的 user-x 的 uid 和 B 服务器的 user-y 的 uid 是一样的</p>
+<h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><p>既然找到了问题原因,解决就好办了,把 B 服务器的 user-x 的 uid 改成和 A 服务器的 user-x 的 uid 一样就好了(或者把 A 的 user-x 的 uid 改成和 B 的 user-x 的 uid 一致)</p>
 <blockquote>
 <ol>
-<li>修改 B 机器的 user-y 的 uid<br><code>usermod -u &lt;new uid&gt; user-y</code></li>
-<li>修改 B 机器的 user-y 的 gid(user-y的默认组,建议跟uid一样)<br><code>groupmod -g &lt;new gid&gt; user-y</code></li>
-<li>修改 B 机器的 user-x 的 uid<br><code>usermod -u &lt;A的user-x的uid&gt; user-x</code></li>
-<li>修改 B 机器的 user-x 的 gid<br><code>groupmod -g &lt;A的user-x的gid&gt; user-x</code></li>
+<li>修改 B 服务器的 user-y 的 uid<br><code>usermod -u &lt;new uid&gt; user-y</code></li>
+<li>修改 B 服务器的 user-y 的 gid (user-y的默认组,建议跟uid一样)<br><code>groupmod -g &lt;new gid&gt; user-y</code></li>
+<li>修改 B 服务器的 user-x 的 uid<br><code>usermod -u &lt;A的user-x的uid&gt; user-x</code></li>
+<li>修改 B 服务器的 user-x 的 gid<br><code>groupmod -g &lt;A的user-x的gid&gt; user-x</code></li>
 </ol>
 </blockquote>
 <h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><blockquote>
 <ol>
-<li>必须以root用户执行修改</li>
-<li>如果被修改uid或gid的用户当前正在运行着进程(比如,bash),需要结束相关进程才能继续修改</li>
+<li>必须以 root 用户执行修改</li>
+<li>如果被修改 uid 或 gid 的用户当前正在运行着进程(比如,bash),需要结束相关进程才能继续修改</li>
 <li>如果文件太多,修改的时间可能会比较长(要有点耐心)</li>
 </ol>
 </blockquote>
