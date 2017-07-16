@@ -6,11 +6,11 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Fly</title>
+  <title>Archives: 2017/7 | Fly</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
 <meta property="og:title" content="Fly">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="http://yoursite.com/archives/2017/07/index.html">
 <meta property="og:site_name" content="Fly">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Fly">
@@ -151,272 +151,47 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-linux的uid对分布式文件系统的影响" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/16/linux的uid对分布式文件系统的影响/">Linux的user的uid对分布式文件系统的影响</a>
-    </h1>
-  
-
-        
-        <a href="/2017/07/16/linux的uid对分布式文件系统的影响/" class="archive-article-date">
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2017/07/16/linux的uid对分布式文件系统的影响/" class="archive-article-date">
   	<time datetime="2017-07-16T14:30:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-16</time>
 </a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>#Linux的user id对分布式文件系统的影响</p>
-<blockquote>
-<p>总结一下今天凌晨部署系统遇到的关于Linux用户的uid问题</p>
-</blockquote>
-<p>##系统概况<br>先说一下系统的关于文件部分的概况</p>
-<blockquote>
-<ol>
-<li>WEB服务器有两个(A,B),每个都有一个用户user-x并使用user-x用户运行程序</li>
-<li>每个服务器的相同目录都挂载同一个龙存(一种文件系统,类似于NFS)</li>
-<li>每个WEB服务器都可能会对龙存进行读写</li>
-<li>每个user-x在各自的服务器上的uid可能是不一样的(原因可能有的服务器是后来加的,或者安装操作系统时不是一个人或者账户新建顺序不一样等) </li>
-</ol>
-</blockquote>
-<p>##问题表现<br>在A服务器上显示的龙存目录文件权限是user-x,在B服务器上的龙存目录文件权限则很是诡异的显示user-y(用来监控服务器状态的建立的).由于B服务器上是使用user-x运行的程序,所以,正常对于龙存目录则无法写入(权限拒绝,不是你的东西你不要动)</p>
-<p>##问题原因<br>经过冥思苦想,甚至打电话给我们运维的小伙,想问问他你的监控程序干嘛了,竟然把我在龙存上的文件属性给改了,我们那小伙一听,一脸懵逼啊,这不可能啊,我的程序没那功能啊,不会是被攻击了吧<del>~</del>(当然不是),然后就跟他描述现状,让他停了监控程序后,依然不行<del>~</del>~~ </p>
-<p>忽然,天空一道闪电(外面下着雨),我想起了Linux的用户id的问题,文件在linux系统中的所有者和所属组是按user id和group id记录的,在显示的时候根据id再对应到相应的所有者和所属组</p>
-<p>既然想到了这种可能性,立马查看这两台服务器的<code>/etc/passwd</code>文件,果然, A 机器的 user-x 的 uid 和 B 机器的 user-y 的 uid 是一样的</p>
-<p>##问题解决<br>既然找到了问题原因,解决就好办了,把B机器的user-x的uid改成和A机器的user-x的uid一样就好了(或者把A的user-x的uid改成和B的user-x的uid一致)</p>
-<blockquote>
-<ol>
-<li>修改 B 机器的 user-y 的 uid<br><code>usermod -u &lt;new uid&gt; user-y</code></li>
-<li>修改 B 机器的 user-y 的 gid(user-y的默认组,建议跟uid一样)<br><code>groupmod -g &lt;new gid&gt; user-y</code></li>
-<li>修改 B 机器的 user-x 的 uid<br><code>usermod -u &lt;A的user-x的uid&gt; user-x</code></li>
-<li>修改 B 机器的 user-x 的 gid<br><code>groupmod -g &lt;A的user-x的gid&gt; user-x</code></li>
-</ol>
-</blockquote>
-<p>##遇到的问题</p>
-<blockquote>
-<ol>
-<li>必须以root用户执行修改</li>
-<li>如果被修改uid或gid的用户当前正在运行着进程(比如,bash),需要结束相关进程才能继续修改</li>
-<li>如果文件太多,修改的时间可能会比较长(要有点耐心)</li>
-</ol>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/07/16/linux的uid对分布式文件系统的影响/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+        </div>
+    	 
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/09/hello-world/">Hello World</a>
+      <a class="archive-article-title" href="/2017/07/16/linux的uid对分布式文件系统的影响/">Linux的user的uid对分布式文件系统的影响</a>
     </h1>
   
 
-        
-        <a href="/2017/06/09/hello-world/" class="archive-article-date">
-  	<time datetime="2017-06-09T01:56:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2017/06/09/hello-world/#more">more >></a>
-        
-      
+        <div class="article-info info-on-right">
+          
+          
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/09/hello-world/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-
-
-
-
   
-    <article id="post-MySQL慢查日志记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
+    </div></section>
+  
+
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/07/MySQL慢查日志记录/">MySQL慢查日志记录</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/07/MySQL慢查日志记录/" class="archive-article-date">
-  	<time datetime="2017-06-07T09:47:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="1-开启MySQL的慢查日志功能"><a href="#1-开启MySQL的慢查日志功能" class="headerlink" title="1. 开启MySQL的慢查日志功能"></a>1. 开启MySQL的慢查日志功能</h2><h3 id="编辑-etc-my-cnf文件"><a href="#编辑-etc-my-cnf文件" class="headerlink" title="编辑/etc/my.cnf文件"></a>编辑<code>/etc/my.cnf</code>文件</h3><pre>
-vim /etc/my.cnf
-</pre>
-
-<h3 id="添加"><a href="#添加" class="headerlink" title="添加"></a>添加</h3><pre>
-slow_query_log         =1                         #开启慢查日志,1为开启,0为关闭,默认关闭
-slow_query_log_file    =/mysqldata/mysql_slow.log #慢查日志存放位置
-long_query_time        =2                          #记录查询时间超过2秒的sql语句
-log_output               =FILE                      #日志输出方式为文件(还有TABLE方式,不过TABLE方式有点影响性能)
-log-queries-not-using-indexes                      #记录未使用索引的查询
-</pre>
-
-<h3 id="重启MySQL"><a href="#重启MySQL" class="headerlink" title="重启MySQL"></a>重启MySQL</h3><pre>service mysqld restart</pre>
-
-<h2 id="2-安装pt-query-digest"><a href="#2-安装pt-query-digest" class="headerlink" title="2. 安装pt-query-digest"></a>2. 安装pt-query-digest</h2><p>pt-query-digest是一个脚本文件,可以用于分析MySQL的慢查询日志,二进制日志等  </p>
-<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><pre>
-yum install perl-DBI perl-DBD-MySQL -y
-</pre>
-        
-          <a class="article-more-a" href="/2017/06/07/MySQL慢查日志记录/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/07/MySQL慢查日志记录/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article id="post-rsync-inotify实现两台机器间文件高效互备" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/07/rsync-inotify实现两台机器间文件高效互备/">rsync-inotify实现两台机器间文件高效互备</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/07/rsync-inotify实现两台机器间文件高效互备/" class="archive-article-date">
-  	<time datetime="2017-06-07T09:27:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="查看操作系统内核支持"><a href="#查看操作系统内核支持" class="headerlink" title="查看操作系统内核支持"></a>查看操作系统内核支持</h2><p><code>ll /proc/sys/fs/inotify/</code></p>
-<pre>
-[root@web ~]# ll /proc/sys/fs/inotify/
-总用量0
--rw-r--r--1 root root 09月923:36 max_queued_events
--rw-r--r--1 root root 09月923:36 max_user_instances
--rw-r--r--1 root root 09月923:36 max_user_watches
-</pre> 
-
-<blockquote>
-<p>设置inotifywait或inotifywatch命令可以监视的文件数量(单进程)<br>max_user_instances #设置每个用户可以运行的inotifywait或inotifywatch命令的进程数<br>max_queued_events #设置inotify实例事件(event)队列可容纳的事件数量</p>
-</blockquote>
-<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><pre>
-[root@web ~]# yum install screen rsync inotify-tool  
-</pre>
-        
-          <a class="article-more-a" href="/2017/06/07/rsync-inotify实现两台机器间文件高效互备/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/07/rsync-inotify实现两台机器间文件高效互备/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-  
-  
 
 
           </div>
@@ -438,9 +213,9 @@ yum install perl-DBI perl-DBD-MySQL -y
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
+		isHome: false,
 		isPost: false,
-		isArchive: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
